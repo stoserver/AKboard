@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2><%= board.title %></h2>
+  <p><%= board.description %></p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+</section>
+
+<section class="card">
+  <h3>새 글 작성</h3>
+  <form method="post" action="/user/boards/<%= board.id %>/posts">
+    <label>제목<input name="title" required /></label>
+    <label>내용<textarea name="content" rows="6" required></textarea></label>
+    <button type="submit">글쓰기</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>게시글 목록</h3>
+  <% if (posts.length === 0) { %>
+    <p>아직 게시글이 없습니다.</p>
+  <% } %>
+  <% posts.forEach((post) => { %>
+    <article class="post">
+      <h4><%= post.title %></h4>
+      <p><%= post.content %></p>
+      <small>작성자: <%= post.username %> · <%= post.created_at %></small>
+    </article>
+  <% }) %>
+</section>
+<%- include('../partials/footer') %>

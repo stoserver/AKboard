@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>계정 인증</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (success) { %><p class="success"><%= success %></p><% } %>
+  <form method="post" action="/auth/verify">
+    <label>인증 타입
+      <select name="channel" required>
+        <option value="phone">전화번호(SMS)</option>
+        <option value="email">이메일</option>
+      </select>
+    </label>
+    <label>전화번호/이메일/아이디<input name="identifier" required /></label>
+    <label>인증코드<input name="code" required /></label>
+    <button type="submit">인증 완료</button>
+  </form>
+</section>
+<%- include('../partials/footer') %>

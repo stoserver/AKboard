@@ -1,0 +1,139 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>어드민 패널</h2>
+  <p>관리자: <strong><%= user.username %></strong></p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+</section>
+
+<section class="card">
+  <h3>사이트/약관/2FA 정책</h3>
+  <form method="post" action="/admin/settings/policies">
+    <label>사이트 이름<input name="siteName" value="<%= config.siteName %>" /></label>
+    <label>약관 동의 문구<input name="termsLabel" value="<%= config.termsLabel %>" /></label>
+    <label>개인정보 동의 문구<input name="privacyLabel" value="<%= config.privacyLabel %>" /></label>
+    <label><input type="checkbox" name="twoFactorRequired" <%= config.twoFactorRequired ? 'checked' : '' %> /> 전체 사용자 2FA 강제</label>
+    <button type="submit">정책 저장</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>인증/앱 비밀번호 설정</h3>
+  <form method="post" action="/admin/settings/auth">
+    <label>SMTP Host<input name="smtpHost" value="<%= config.smtpHost %>" /></label>
+    <label>SMTP Port<input name="smtpPort" value="<%= config.smtpPort %>" /></label>
+    <label>SMTP User<input name="smtpUser" value="<%= config.smtpUser %>" /></label>
+    <label>SMTP Password(앱 비밀번호)<input type="password" name="smtpPass" value="<%= config.smtpPass %>" /></label>
+    <label>OCTOMO API Key<input name="octomoApiKey" value="<%= config.octomoApiKey %>" /></label>
+    <label>OCTOMO Verify URL<input name="octomoVerifyUrl" value="<%= config.octomoVerifyUrl %>" /></label>
+    <label>OCTOMO Send URL<input name="octomoSendUrl" value="<%= config.octomoSendUrl %>" /></label>
+    <button type="submit">인증 설정 저장</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>유저 관리 / 권한 부여 / 유저 차단 / 2FA</h3>
+  <table>
+    <thead><tr><th>ID</th><th>학번</th><th>본명</th><th>닉네임</th><th>아이디</th><th>이메일</th><th>전화번호</th><th>약관</th><th>개인정보</th><th>2FA</th><th>인증</th><th>차단</th><th>역할</th><th>작업</th></tr></thead>
+    <tbody>
+      <% users.forEach((u) => { %>
+        <tr>
+          <td><%= u.id %></td>
+          <td><%= u.student_id || '-' %></td>
+          <td><%= u.real_name || '-' %></td>
+          <td><%= u.nickname || '-' %></td>
+          <td><%= u.username %></td>
+          <td><%= u.email ? u.email.replace(/(.{2}).+(@.+)/, '$1***$2') : '-' %></td>
+          <td><%= u.phone ? u.phone.replace(/(\d{3})\d+(\d{2})$/, '$1****$2') : '-' %></td>
+          <td><%= u.terms_agreed ? '동의' : '미동의' %></td>
+          <td><%= u.privacy_agreed ? '동의' : '미동의' %></td>
+          <td><%= u.two_factor_enabled ? '사용' : '미사용' %></td>
+          <td><%= u.is_verified ? '완료' : '대기' %></td>
+          <td><%= u.is_blocked ? '차단' : '정상' %></td>
+          <td><%= u.roles.join(', ') %></td>
+          <td>
+            <form method="post" action="/admin/users/<%= u.id %>/<%= u.is_blocked ? 'unblock' : 'block' %>">
+              <button type="submit"><%= u.is_blocked ? '차단해제' : '차단' %></button>
+            </form>
+            <form method="post" action="/admin/users/<%= u.id %>/two-factor">
+              <input type="hidden" name="enabled" value="<%= u.two_factor_enabled ? '0' : '1' %>" />
+              <button type="submit"><%= u.two_factor_enabled ? '2FA해제' : '2FA활성화' %></button>
+            </form>
+            <form method="post" action="/admin/users/<%= u.id %>/roles/assign">
+              <select name="roleName">
+                <% roles.forEach((r) => { %><option value="<%= r.name %>"><%= r.name %></option><% }) %>
+              </select>
+              <button type="submit">역할부여</button>
+            </form>
+            <form method="post" action="/admin/users/<%= u.id %>/roles/revoke">
+              <select name="roleName">
+                <% roles.forEach((r) => { %><option value="<%= r.name %>"><%= r.name %></option><% }) %>
+              </select>
+              <button type="submit">역할회수</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h3>IP 차단 관리</h3>
+  <form method="post" action="/admin/ips/block">
+    <label>IP<input name="ipAddress" required /></label>
+    <label>사유<input name="reason" /></label>
+    <button type="submit">IP 차단</button>
+  </form>
+  <ul>
+    <% blockedIps.forEach((entry) => { %>
+      <li>
+        <strong><%= entry.ip_address %></strong> (<%= entry.reason || '사유 없음' %>)
+        <form method="post" action="/admin/ips/unblock" class="inline">
+          <input type="hidden" name="ipAddress" value="<%= entry.ip_address %>" />
+          <button type="submit">해제</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+</section>
+
+<section class="card">
+  <h3>게시판 / 특수역할 게시판 설정</h3>
+  <form method="post" action="/admin/boards">
+    <label>슬러그<input name="slug" required /></label>
+    <label>제목<input name="title" required /></label>
+    <label>설명<input name="description" /></label>
+    <label>필수역할(선택)<input name="requiredRole" placeholder="vip" /></label>
+    <button type="submit">게시판 추가</button>
+  </form>
+
+  <% boards.forEach((board) => { %>
+    <form method="post" action="/admin/boards/<%= board.id %>/update" class="board-form">
+      <input name="slug" value="<%= board.slug %>" required />
+      <input name="title" value="<%= board.title %>" required />
+      <input name="description" value="<%= board.description %>" />
+      <input name="requiredRole" value="<%= board.required_role || '' %>" placeholder="역할" />
+      <button type="submit">수정</button>
+    </form>
+    <form method="post" action="/admin/boards/<%= board.id %>/delete" class="inline">
+      <button type="submit">삭제</button>
+    </form>
+  <% }) %>
+</section>
+<section class="card">
+  <h3>최근 관리자 감사 로그</h3>
+  <table>
+    <thead><tr><th>시간</th><th>작업</th><th>대상</th><th>IP</th></tr></thead>
+    <tbody>
+      <% auditLogs.forEach((log) => { %>
+        <tr>
+          <td><%= log.created_at %></td>
+          <td><%= log.action %></td>
+          <td><%= `${log.target_type || '-'}:${log.target_id || '-'}` %></td>
+          <td><%= log.ip_address || '-' %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+<%- include('../partials/footer') %>
