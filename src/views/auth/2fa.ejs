@@ -1,0 +1,11 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>2FA 인증</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (success) { %><p class="success"><%= success %></p><% } %>
+  <form method="post" action="/auth/2fa">
+    <label>2FA 코드<input name="code" required /></label>
+    <button type="submit">인증 완료</button>
+  </form>
+</section>
+<%- include('../partials/footer') %>

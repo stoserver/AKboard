@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>환영합니다!<br />AKBoard 1을 설치해보세요.</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (success) { %><p class="success"><%= success %></p><% } %>
+
+  <% if (!success) { %>
+  <form method="post" action="/install">
+    <label>사이트 이름<input name="siteName" required /></label>
+    <label>데이터베이스 생성 이름<input name="databaseName" required /></label>
+    <label>최고 관리자 아이디<input name="adminUsername" required /></label>
+    <label>최고 관리자 비밀번호 (암호화 처리됩니다.)<input type="password" name="adminPassword" minlength="8" required /></label>
+
+    <h3>이용 동의 문구 (회원가입 체크박스)</h3>
+    <label>약관 동의 문구<input name="termsLabel" value="{사이트이름} 이용약관에 동의합니다" /></label>
+    <label>개인정보 동의 문구<input name="privacyLabel" value="개인정보 처리방침에 동의합니다." /></label>
+
+    <h3>OAuth 설정 (선택)</h3>
+    <label>Google Client ID<input name="oauthGoogleClientId" /></label>
+    <label>Google Client Secret<input name="oauthGoogleClientSecret" /></label>
+    <label>GitHub Client ID<input name="oauthGithubClientId" /></label>
+    <label>GitHub Client Secret<input name="oauthGithubClientSecret" /></label>
+
+    <h3>이메일/인증 설정</h3>
+    <label>SMTP Host<input name="smtpHost" value="smtp.gmail.com" /></label>
+    <label>SMTP Port<input name="smtpPort" value="587" /></label>
+    <label>SMTP User (앱 비밀번호 계정)<input name="smtpUser" value="auth@parvia.kr" /></label>
+    <label>SMTP Password (앱 비밀번호)<input type="password" name="smtpPass" /></label>
+    <label><input type="checkbox" name="smtpSecure" /> SMTP Secure(TLS)</label>
+
+    <label>OCTOMO API Key<input name="octomoApiKey" /></label>
+    <label>OCTOMO Verify URL<input name="octomoVerifyUrl" value="https://octomo.octoverse.kr/api/v1/messages/verify" /></label>
+    <label>OCTOMO Send URL<input name="octomoSendUrl" value="https://octomo.octoverse.kr/api/v1/messages/send" /></label>
+
+    <label><input type="checkbox" name="twoFactorRequired" /> 2FA 기본 활성화</label>
+
+    <button type="submit">설치 완료</button>
+  </form>
+  <% } else { %>
+    <a class="button-link" href="/auth/login">로그인으로 이동</a>
+  <% } %>
+</section>
+<%- include('../partials/footer') %>
