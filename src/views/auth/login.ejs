@@ -1,0 +1,22 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>로그인</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="post" action="/auth/login">
+    <label>이메일 / 아이디 / 전화번호<input name="identifier" required /></label>
+    <label>비밀번호<input type="password" name="password" required /></label>
+    <button type="submit">로그인</button>
+  </form>
+  <p class="notice">2FA가 활성화된 계정은 비밀번호 입력 후 2차 인증코드를 추가로 입력해야 합니다.</p>
+  <div class="inline-row">
+    <a class="button-link" href="/auth/find-id">아이디 찾기</a>
+    <a class="button-link" href="/auth/reset-password">비밀번호 찾기</a>
+  </div>
+  <hr />
+  <h3>소셜 로그인</h3>
+  <div class="inline-row">
+    <a class="button-link" href="/auth/google">Google 연동 로그인</a>
+    <a class="button-link" href="/auth/github">GitHub 연동 로그인</a>
+  </div>
+</section>
+<%- include('../partials/footer') %>

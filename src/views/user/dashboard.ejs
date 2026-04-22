@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>유저 패널</h2>
+  <p><strong><%= user.username %></strong> 님 환영합니다.</p>
+  <p>보유 역할: <%= user.roles.join(', ') %></p>
+  <form method="post" action="/auth/logout"><button type="submit">로그아웃</button></form>
+</section>
+
+<section class="card">
+  <h3>접근 가능한 게시판</h3>
+  <ul>
+    <% boards.forEach((board) => { %>
+      <li>
+        <a href="/user/boards/<%= board.id %>"><%= board.title %></a>
+        <% if (board.required_role) { %><span class="tag"><%= board.required_role %></span><% } %>
+      </li>
+    <% }) %>
+  </ul>
+</section>
+<%- include('../partials/footer') %>

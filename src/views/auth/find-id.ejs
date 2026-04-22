@@ -1,0 +1,21 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>아이디 찾기</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (success) { %><p class="success"><%= success %></p><% } %>
+  <% if (guide) { %><p class="notice"><%= guide %></p><% } %>
+  <% if (foundId) { %><p class="success">회원님의 아이디는 <strong><%= foundId %></strong> 입니다.</p><% } %>
+
+  <form method="post" action="/auth/find-id/request">
+    <label>전화번호<input name="phone" required /></label>
+    <button type="submit">인증코드 요청</button>
+  </form>
+
+  <form method="post" action="/auth/find-id/verify">
+    <label>인증코드<input name="code" required /></label>
+    <button type="submit">아이디 확인</button>
+  </form>
+
+  <p class="notice">등록 계정이 없으면 학번/이름을 들고 채널톡으로 문의해주세요.</p>
+</section>
+<%- include('../partials/footer') %>

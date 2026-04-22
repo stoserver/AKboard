@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+<section class="card">
+  <h2>회원가입 (마지막 단계에서 인증 필요)</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (success) { %><p class="success"><%= success %></p><% } %>
+  <% if (verifyInfo) { %><p class="notice"><%= verifyInfo %></p><% } %>
+  <form method="post" action="/auth/register">
+    <label>학번<input name="studentId" required /></label>
+    <label>이름(본명)<input name="realName" required /></label>
+    <label>닉네임<input name="nickname" required /></label>
+    <label>아이디<input name="username" required /></label>
+
+    <label>가입 방식
+      <select name="contactType" required>
+        <option value="email">이메일</option>
+        <option value="phone">전화번호</option>
+      </select>
+    </label>
+    <label>전화번호 또는 이메일<input name="contactValue" required /></label>
+    <label>비밀번호(8자 이상)<input type="password" name="password" minlength="8" required /></label>
+
+    <label><input type="checkbox" name="termsAgreed" required /> <%= termsLabel %></label>
+    <label><input type="checkbox" name="privacyAgreed" required /> <%= privacyLabel %></label>
+
+    <button type="submit">가입하기</button>
+  </form>
+
+  <hr />
+  <h3>또는 소셜 연동 가입/로그인</h3>
+  <div class="inline-row">
+    <a class="button-link" href="/auth/google">Google 연동</a>
+    <a class="button-link" href="/auth/github">GitHub 연동</a>
+  </div>
+</section>
+<%- include('../partials/footer') %>
